@@ -1,1 +1,765 @@
 # festinha
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🐄 Meu Churrasco de Aniversário</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c2c2a 0%, #444441 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            border-bottom: 4px solid #639922;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 2rem;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 0;
+            border-bottom: 2px solid #ddd;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 12px 20px;
+            font-size: 14px;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            color: #666;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .tab-btn:hover {
+            color: #333;
+        }
+
+        .tab-btn.active {
+            color: #639922;
+            border-bottom-color: #639922;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section {
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #2c2c2a;
+            border-left: 4px solid #639922;
+            padding-left: 1rem;
+        }
+
+        .input-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="date"],
+        select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        input[type="date"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #639922;
+            box-shadow: 0 0 0 3px rgba(99, 153, 34, 0.1);
+            background: #fafafa;
+        }
+
+        button {
+            padding: 10px 16px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+            color: #333;
+        }
+
+        button:hover {
+            background: #f5f5f5;
+            border-color: #999;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .btn-primary {
+            background: #639922;
+            color: white;
+            border-color: #639922;
+        }
+
+        .btn-primary:hover {
+            background: #527a1a;
+            border-color: #527a1a;
+        }
+
+        .guest-item {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s;
+        }
+
+        .guest-item:hover {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .guest-item button {
+            padding: 6px 12px;
+            font-size: 12px;
+            background: #ffe6e6;
+            color: #d32f2f;
+            border: 1px solid #ffb3b3;
+        }
+
+        .guest-item button:hover {
+            background: #ffcccc;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .metric-card {
+            background: #f9f9f9;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.2s;
+        }
+
+        .metric-card:hover {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            border-color: #ddd;
+        }
+
+        .metric-label {
+            font-size: 12px;
+            color: #888;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .metric-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #2c2c2a;
+        }
+
+        .metric-card.total {
+            background: linear-gradient(135deg, #E6F1FB 0%, #B5D4F4 100%);
+            border-color: #85B7EB;
+            grid-column: 1 / -1;
+        }
+
+        .metric-card.total .metric-value {
+            color: #185FA5;
+            font-size: 32px;
+        }
+
+        .metric-card.carne {
+            background: linear-gradient(135deg, #FAECE7 0%, #F5C4B3 100%);
+            border-color: #F0997B;
+        }
+
+        .metric-card.bolo {
+            background: linear-gradient(135deg, #FAEEDA 0%, #FAC775 100%);
+            border-color: #EF9F27;
+        }
+
+        .metric-card.refri {
+            background: linear-gradient(135deg, #E1F5EE 0%, #9FE1CB 100%);
+            border-color: #5DCAA5;
+        }
+
+        .summary {
+            background: #E6F1FB;
+            border-left: 4px solid #185FA5;
+            padding: 1rem;
+            border-radius: 6px;
+            margin: 1rem 0;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .summary strong {
+            color: #185FA5;
+        }
+
+        .date-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .date-card {
+            padding: 1.5rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: white;
+        }
+
+        .date-card:hover {
+            border-color: #999;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .date-card.selected {
+            border-color: #639922;
+            background: #f0f7e8;
+            font-weight: 600;
+        }
+
+        .date-card h3 {
+            font-size: 18px;
+            margin-bottom: 0.5rem;
+            color: #2c2c2a;
+        }
+
+        .date-card p {
+            font-size: 13px;
+            color: #888;
+        }
+
+        .checkbox-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .checkbox-list label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            font-weight: normal;
+            margin: 0;
+        }
+
+        .checkbox-list input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .footer {
+            background: #f5f5f5;
+            padding: 2rem;
+            text-align: center;
+            color: #888;
+            font-size: 13px;
+            border-top: 1px solid #ddd;
+        }
+
+        .add-btn-group {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .add-btn-group input {
+            flex: 1;
+        }
+
+        .add-btn-group button {
+            background: #639922;
+            color: white;
+            border: none;
+            font-weight: 600;
+        }
+
+        .add-btn-group button:hover {
+            background: #527a1a;
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                padding: 1rem;
+            }
+
+            .date-options {
+                grid-template-columns: 1fr;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .tabs {
+                gap: 0.5rem;
+            }
+
+            .tab-btn {
+                padding: 10px 14px;
+                font-size: 13px;
+            }
+        }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 600px) {
+            .stats-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🐄 Meu Churrasco de Aniversário</h1>
+            <p>Planejamento completo para sua festa tema vaca</p>
+        </div>
+
+        <div class="content">
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('data')">📅 Datas & Local</button>
+                <button class="tab-btn" onclick="switchTab('guests')">👥 Convidados</button>
+                <button class="tab-btn" onclick="switchTab('calculos')">🧮 Cálculos</button>
+                <button class="tab-btn" onclick="switchTab('orcamento')">💰 Orçamento</button>
+            </div>
+
+            <!-- TAB: DATA E LOCAL -->
+            <div id="data" class="tab-content active">
+                <div class="section">
+                    <h2 class="section-title">📅 Data do Churrasco</h2>
+                    <p style="margin-bottom: 1rem; color: #666;">Seu aniversário é <strong>23 de abril</strong>. Escolha a data:</p>
+                    <div class="date-options">
+                        <div class="date-card" onclick="selectDate('2025-04-18', this)">
+                            <h3>18 de Abril</h3>
+                            <p>5 dias antes</p>
+                        </div>
+                        <div class="date-card" onclick="selectDate('2025-04-25', this)">
+                            <h3>25 de Abril</h3>
+                            <p>2 dias depois</p>
+                        </div>
+                    </div>
+                    <div id="dataSelecionada" style="padding: 1rem; background: #f5f5f5; border-radius: 6px; text-align: center; color: #888;">
+                        Selecione uma data
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2 class="section-title">📍 Local do Churrasco</h2>
+                    <div class="input-group">
+                        <label>Área do churrasco (R$)</label>
+                        <input type="number" id="areaChurrasco" value="500" min="0" onchange="updateCalculos()">
+                        <p style="font-size: 12px; color: #888; margin-top: 0.5rem;">💡 Você vai parcelar em <strong>5x de R$ 100</strong></p>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Local/Descrição</label>
+                        <input type="text" id="localDesc" placeholder="Ex: Casa, Sítio, Condomínio..." value="Casa">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Horário da festa</label>
+                        <select id="horario">
+                            <option value="11:00">11:00 - Almoço</option>
+                            <option value="12:00" selected>12:00 - Almoço</option>
+                            <option value="17:00">17:00 - Chá</option>
+                            <option value="18:00">18:00 - Jantar</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: CONVIDADOS -->
+            <div id="guests" class="tab-content">
+                <div class="section">
+                    <h2 class="section-title">👥 Lista de Convidados</h2>
+                    <div class="add-btn-group">
+                        <input type="text" id="guestName" placeholder="Nome do convidado" onkeypress="if(event.key=='Enter') addGuest()">
+                        <button class="btn-primary" onclick="addGuest()">+ Adicionar</button>
+                    </div>
+
+                    <div id="guestList"></div>
+
+                    <div class="metric-card" style="margin-top: 2rem;">
+                        <div class="metric-label">Total de Convidados</div>
+                        <div class="metric-value" id="totalGuests">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: CÁLCULOS -->
+            <div id="calculos" class="tab-content">
+                <div class="section">
+                    <h2 class="section-title">👫 Quantidade de Convidados</h2>
+                    <div class="input-group">
+                        <label>Quantas pessoas vão vir?</label>
+                        <input type="number" id="numPessoas" value="20" min="1" onchange="updateCalculos()">
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2 class="section-title">🥩 Cálculo de Carnes</h2>
+                    <p style="font-size: 13px; color: #888; margin-bottom: 1rem;">📊 Estimativa: <strong>400g de carne por pessoa</strong></p>
+                    
+                    <div class="grid">
+                        <div class="metric-card carne">
+                            <div class="metric-label">Total de Carne</div>
+                            <div class="metric-value" id="totalCarne">0</div>
+                            <div style="font-size: 12px; color: #555; margin-top: 0.5rem;">kg</div>
+                        </div>
+                        <div class="metric-card carne">
+                            <div class="metric-label">Valor Estimado</div>
+                            <div class="metric-value" id="valorCarne">R$ 0</div>
+                            <div style="font-size: 12px; color: #555; margin-top: 0.5rem;">@R$ 40/kg</div>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Preço da carne (R$/kg)</label>
+                        <input type="number" id="precoCarne" value="40" min="0" step="0.01" onchange="updateCalculos()">
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2 class="section-title">🥤 Cálculo de Refrigerante</h2>
+                    <p style="font-size: 13px; color: #888; margin-bottom: 1rem;">📊 Estimativa: <strong>500ml por pessoa</strong></p>
+                    
+                    <div class="grid">
+                        <div class="metric-card refri">
+                            <div class="metric-label">Total Necessário</div>
+                            <div class="metric-value" id="totalRefri">0</div>
+                            <div style="font-size: 12px; color: #555; margin-top: 0.5rem;">litros</div>
+                        </div>
+                        <div class="metric-card refri">
+                            <div class="metric-label">Garrafas (2L)</div>
+                            <div class="metric-value" id="garrafasRefri">0</div>
+                            <div style="font-size: 12px; color: #555; margin-top: 0.5rem;">garrafas</div>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Preço da garrafa (2L)</label>
+                        <input type="number" id="precoRefri" value="8" min="0" step="0.01" onchange="updateCalculos()">
+                    </div>
+
+                    <div class="metric-card refri" style="text-align: center; padding: 1.5rem;">
+                        <div class="metric-label">Valor Estimado</div>
+                        <div class="metric-value" id="valorRefri">R$ 0</div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2 class="section-title">🎂 Cálculo de Bolo</h2>
+                    <div class="stats-row">
+                        <div class="input-group">
+                            <label>Pessoas que o bolo alimenta</label>
+                            <input type="number" id="boloPorcoes" value="25" min="1" onchange="updateCalculos()">
+                        </div>
+                        <div class="input-group">
+                            <label>Bolos necessários</label>
+                            <input type="number" id="qtdBolos" readonly style="background: #f5f5f5; cursor: not-allowed;">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Valor por bolo (R$)</label>
+                        <input type="number" id="precoBolo" value="80" min="0" step="0.01" onchange="updateCalculos()">
+                    </div>
+
+                    <div class="metric-card bolo" style="text-align: center; padding: 1.5rem;">
+                        <div class="metric-label">Valor Total do Bolo</div>
+                        <div class="metric-value" id="valorBolo">R$ 0</div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2 class="section-title">🎪 Decoração (Tema Vaca)</h2>
+                    <div class="input-group">
+                        <label>Quanto você quer gastar em decoração? (R$)</label>
+                        <input type="number" id="gastoDecoracao" value="150" min="0" onchange="updateCalculos()">
+                    </div>
+
+                    <div class="summary">
+                        <strong>💡 Ideias de Decoração Tema Vaca:</strong><br>
+                        • Balões preto e branco (listrados) - R$ 30-50<br>
+                        • Faixa e cartazes cow print - R$ 20-30<br>
+                        • Toalhas e guardanapos temáticos - R$ 20-40<br>
+                        • Placas decorativas ("MOO-ito bom!") - R$ 15-25<br>
+                        • Chapéus de vaqueiro ou orelhas de vaca - R$ 20-30
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: ORÇAMENTO -->
+            <div id="orcamento" class="tab-content">
+                <div class="section">
+                    <h2 class="section-title">💰 Resumo Completo do Orçamento</h2>
+                    
+                    <div class="grid">
+                        <div class="metric-card">
+                            <div class="metric-label">Área Churrasco</div>
+                            <div class="metric-value" id="orcAreaFinal">R$ 500</div>
+                        </div>
+                        <div class="metric-card carne">
+                            <div class="metric-label">Carnes</div>
+                            <div class="metric-value" id="orcCarneFinal">R$ 0</div>
+                        </div>
+                        <div class="metric-card refri">
+                            <div class="metric-label">Refrigerante</div>
+                            <div class="metric-value" id="orcRefriFinal">R$ 0</div>
+                        </div>
+                        <div class="metric-card bolo">
+                            <div class="metric-label">Bolo</div>
+                            <div class="metric-value" id="orcBoloFinal">R$ 0</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Decoração</div>
+                            <div class="metric-value" id="orcDecorFinal">R$ 0</div>
+                        </div>
+                        <div class="metric-card total">
+                            <div class="metric-label">TOTAL GERAL</div>
+                            <div class="metric-value" id="orcTotalFinal">R$ 0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2 class="section-title">✅ Checklist da Festa</h2>
+                    <div class="checkbox-list">
+                        <label><input type="checkbox"> Confirmar data e local</label>
+                        <label><input type="checkbox"> Enviar convites aos convidados</label>
+                        <label><input type="checkbox"> Fazer lista de compras</label>
+                        <label><input type="checkbox"> Comprar carnes (com antecedência)</label>
+                        <label><input type="checkbox"> Encomendar bolo com confirmação</label>
+                        <label><input type="checkbox"> Comprar bebidas e refrigerantes</label>
+                        <label><input type="checkbox"> Comprar decoração tema vaca</label>
+                        <label><input type="checkbox"> Preparar música e som</label>
+                        <label><input type="checkbox"> Confirmar presença dos convidados</label>
+                        <label><input type="checkbox"> Preparar o local (limpeza, mesas, etc)</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>🐄 Plataforma de Organização de Churrasco | Criada com ❤️ para sua festa especial</p>
+        </div>
+    </div>
+
+    <script>
+        let selectedDate = null;
+        let guests = [];
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(tab).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function selectDate(date, element) {
+            selectedDate = date;
+            document.querySelectorAll('.date-card').forEach(el => el.classList.remove('selected'));
+            element.classList.add('selected');
+            
+            const dateObj = new Date(date + 'T00:00:00');
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const formatted = dateObj.toLocaleDateString('pt-BR', options);
+            
+            document.getElementById('dataSelecionada').innerHTML = `<strong>📅 Data selecionada: ${formatted}</strong>`;
+        }
+
+        function addGuest() {
+            const nameInput = document.getElementById('guestName');
+            const name = nameInput.value.trim();
+            if (name === '') {
+                alert('Digite o nome do convidado');
+                return;
+            }
+            guests.push(name);
+            nameInput.value = '';
+            renderGuests();
+        }
+
+        function removeGuest(index) {
+            guests.splice(index, 1);
+            renderGuests();
+        }
+
+        function renderGuests() {
+            const list = document.getElementById('guestList');
+            if (guests.length === 0) {
+                list.innerHTML = '<p style="text-align: center; color: #999; padding: 2rem;">Nenhum convidado adicionado ainda</p>';
+            } else {
+                list.innerHTML = guests.map((guest, i) => 
+                    `<div class="guest-item">
+                        <span>${i + 1}. ${guest}</span>
+                        <button onclick="removeGuest(${i})">✕ Remover</button>
+                    </div>`
+                ).join('');
+            }
+            
+            document.getElementById('totalGuests').textContent = guests.length;
+            
+            if (guests.length > 0) {
+                document.getElementById('numPessoas').value = guests.length;
+                updateCalculos();
+            }
+        }
+
+        function updateCalculos() {
+            const numPessoas = parseInt(document.getElementById('numPessoas').value) || 0;
+            const precoCarne = parseFloat(document.getElementById('precoCarne').value) || 0;
+            const precoRefri = parseFloat(document.getElementById('precoRefri').value) || 0;
+            const precoBolo = parseFloat(document.getElementById('precoBolo').value) || 0;
+            const boloPorcoes = parseInt(document.getElementById('boloPorcoes').value) || 1;
+            const areaChurrasco = parseFloat(document.getElementById('areaChurrasco').value) || 0;
+            const gastoDecoracao = parseFloat(document.getElementById('gastoDecoracao').value) || 0;
+
+            // Carnes: 400g por pessoa
+            const totalCarne = (numPessoas * 0.4).toFixed(1);
+            const valorCarne = (totalCarne * precoCarne).toFixed(2);
+            document.getElementById('totalCarne').textContent = totalCarne;
+            document.getElementById('valorCarne').textContent = `R$ ${formatCurrency(valorCarne)}`;
+
+            // Refrigerante: 500ml por pessoa = 0.5L
+            const totalRefri = (numPessoas * 0.5).toFixed(1);
+            const garrafasRefri = Math.ceil(totalRefri / 2);
+            const valorRefri = (garrafasRefri * precoRefri).toFixed(2);
+            document.getElementById('totalRefri').textContent = totalRefri;
+            document.getElementById('garrafasRefri').textContent = garrafasRefri;
+            document.getElementById('valorRefri').textContent = `R$ ${formatCurrency(valorRefri)}`;
+
+            // Bolo
+            const qtdBolos = Math.ceil(numPessoas / boloPorcoes);
+            const valorBolo = (qtdBolos * precoBolo).toFixed(2);
+            document.getElementById('qtdBolos').value = qtdBolos;
+            document.getElementById('valorBolo').textContent = `R$ ${formatCurrency(valorBolo)}`;
+
+            // Orçamento Final
+            const total = (areaChurrasco + parseFloat(valorCarne) + parseFloat(valorRefri) + parseFloat(valorBolo) + gastoDecoracao).toFixed(2);
+            
+            document.getElementById('orcAreaFinal').textContent = `R$ ${formatCurrency(areaChurrasco)}`;
+            document.getElementById('orcCarneFinal').textContent = `R$ ${formatCurrency(valorCarne)}`;
+            document.getElementById('orcRefriFinal').textContent = `R$ ${formatCurrency(valorRefri)}`;
+            document.getElementById('orcBoloFinal').textContent = `R$ ${formatCurrency(valorBolo)}`;
+            document.getElementById('orcDecorFinal').textContent = `R$ ${formatCurrency(gastoDecoracao)}`;
+            document.getElementById('orcTotalFinal').textContent = `R$ ${formatCurrency(total)}`;
+        }
+
+        function formatCurrency(value) {
+            return parseFloat(value).toLocaleString('pt-BR', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        }
+
+        // Inicializar
+        updateCalculos();
+        renderGuests();
+    </script>
+</body>
+</html>
