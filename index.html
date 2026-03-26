@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🐄 Meu Churrasco de Aniversário</title>
+    <button onclick="gerarLink()" class="btn-primary">🔗 Compartilhar</button>
     <style>
         * {
             margin: 0;
@@ -647,117 +648,197 @@
         </div>
     </div>
 
-    <script>
-        let selectedDate = null;
-        let guests = [];
 
-        function switchTab(tab) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-            document.getElementById(tab).classList.add('active');
-            event.target.classList.add('active');
+<script>
+let selectedDate = null;
+let guests = [];
+
+// ===== SALVAR DADOS =====
+function salvarDados() {
+    const dados = {
+        guests: guests,
+        numPessoas: document.getElementById('numPessoas').value,
+        precoCarne: document.getElementById('precoCarne').value,
+        precoRefri: document.getElementById('precoRefri').value,
+        precoBolo: document.getElementById('precoBolo').value,
+        gastoDecoracao: document.getElementById('gastoDecoracao').value,
+        areaChurrasco: document.getElementById('areaChurrasco').value
+    };
+
+    localStorage.setItem('churrascoDB', JSON.stringify(dados));
+}
+
+// ===== CARREGAR DADOS =====
+function carregarDados() {
+    // 🔗 Primeiro: tenta carregar do link
+    const params = new URLSearchParams(window.location.search);
+    const dataParam = params.get('data');
+
+    if (dataParam) {
+        try {
+            const dados = JSON.parse(atob(dataParam));
+            guests = dados.guests || [];
+            document.getElementById('numPessoas').value = dados.numPessoas || 20;
+        } catch(e) {
+            console.log("Erro ao ler link");
         }
+    }
 
-        function selectDate(date, element) {
-            selectedDate = date;
-            document.querySelectorAll('.date-card').forEach(el => el.classList.remove('selected'));
-            element.classList.add('selected');
-            
-            const dateObj = new Date(date + 'T00:00:00');
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            const formatted = dateObj.toLocaleDateString('pt-BR', options);
-            
-            document.getElementById('dataSelecionada').innerHTML = `<strong>📅 Data selecionada: ${formatted}</strong>`;
-        }
+    // 💾 Depois: carrega do localStorage
+    const dados = JSON.parse(localStorage.getItem('churrascoDB'));
+    if (!dados) return;
 
-        function addGuest() {
-            const nameInput = document.getElementById('guestName');
-            const name = nameInput.value.trim();
-            if (name === '') {
-                alert('Digite o nome do convidado');
-                return;
-            }
-            guests.push(name);
-            nameInput.value = '';
-            renderGuests();
-        }
+    guests = dados.guests || [];
+    document.getElementById('numPessoas').value = dados.numPessoas || 20;
+    document.getElementById('precoCarne').value = dados.precoCarne || 40;
+    document.getElementById('precoRefri').value = dados.precoRefri || 8;
+    document.getElementById('precoBolo').value = dados.precoBolo || 80;
+    document.getElementById('gastoDecoracao').value = dados.gastoDecoracao || 150;
+    document.getElementById('areaChurrasco').value = dados.areaChurrasco || 500;
 
-        function removeGuest(index) {
-            guests.splice(index, 1);
-            renderGuests();
-        }
+    renderGuests();
+    updateCalculos();
+}
 
-        function renderGuests() {
-            const list = document.getElementById('guestList');
-            if (guests.length === 0) {
-                list.innerHTML = '<p style="text-align: center; color: #999; padding: 2rem;">Nenhum convidado adicionado ainda</p>';
-            } else {
-                list.innerHTML = guests.map((guest, i) => 
-                    `<div class="guest-item">
-                        <span>${i + 1}. ${guest}</span>
-                        <button onclick="removeGuest(${i})">✕ Remover</button>
-                    </div>`
-                ).join('');
-            }
-            
-            document.getElementById('totalGuests').textContent = guests.length;
-            
-            if (guests.length > 0) {
-                document.getElementById('numPessoas').value = guests.length;
-                updateCalculos();
-            }
-        }
+// ===== COMPARTILHAR =====
+function gerarLink() {
+    const dados = {
+        guests: guests,
+        numPessoas: document.getElementById('numPessoas').value
+    };
 
-        function updateCalculos() {
-            const numPessoas = parseInt(document.getElementById('numPessoas').value) || 0;
-            const precoCarne = parseFloat(document.getElementById('precoCarne').value) || 0;
-            const precoRefri = parseFloat(document.getElementById('precoRefri').value) || 0;
-            const precoBolo = parseFloat(document.getElementById('precoBolo').value) || 0;
-            const boloPorcoes = parseInt(document.getElementById('boloPorcoes').value) || 1;
-            const areaChurrasco = parseFloat(document.getElementById('areaChurrasco').value) || 0;
-            const gastoDecoracao = parseFloat(document.getElementById('gastoDecoracao').value) || 0;
+    const encoded = btoa(JSON.stringify(dados));
+    const url = window.location.origin + window.location.pathname + "?data=" + encoded;
 
-            // Carnes: 400g por pessoa
-            const totalCarne = (numPessoas * 0.4).toFixed(1);
-            const valorCarne = (totalCarne * precoCarne).toFixed(2);
-            document.getElementById('totalCarne').textContent = totalCarne;
-            document.getElementById('valorCarne').textContent = `R$ ${formatCurrency(valorCarne)}`;
+    navigator.clipboard.writeText(url);
+    alert("Link copiado! 🎉");
+}
 
-            // Refrigerante: 500ml por pessoa = 0.5L
-            const totalRefri = (numPessoas * 0.5).toFixed(1);
-            const garrafasRefri = Math.ceil(totalRefri / 2);
-            const valorRefri = (garrafasRefri * precoRefri).toFixed(2);
-            document.getElementById('totalRefri').textContent = totalRefri;
-            document.getElementById('garrafasRefri').textContent = garrafasRefri;
-            document.getElementById('valorRefri').textContent = `R$ ${formatCurrency(valorRefri)}`;
+// ===== TABS =====
+function switchTab(tab) {
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+    document.getElementById(tab).classList.add('active');
+    event.target.classList.add('active');
+}
 
-            // Bolo
-            const qtdBolos = Math.ceil(numPessoas / boloPorcoes);
-            const valorBolo = (qtdBolos * precoBolo).toFixed(2);
-            document.getElementById('qtdBolos').value = qtdBolos;
-            document.getElementById('valorBolo').textContent = `R$ ${formatCurrency(valorBolo)}`;
+// ===== DATA =====
+function selectDate(date, element) {
+    selectedDate = date;
+    document.querySelectorAll('.date-card').forEach(el => el.classList.remove('selected'));
+    element.classList.add('selected');
+    
+    const dateObj = new Date(date + 'T00:00:00');
+    const formatted = dateObj.toLocaleDateString('pt-BR', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+    
+    document.getElementById('dataSelecionada').innerHTML =
+        `<strong>📅 Data selecionada: ${formatted}</strong>`;
 
-            // Orçamento Final
-            const total = (areaChurrasco + parseFloat(valorCarne) + parseFloat(valorRefri) + parseFloat(valorBolo) + gastoDecoracao).toFixed(2);
-            
-            document.getElementById('orcAreaFinal').textContent = `R$ ${formatCurrency(areaChurrasco)}`;
-            document.getElementById('orcCarneFinal').textContent = `R$ ${formatCurrency(valorCarne)}`;
-            document.getElementById('orcRefriFinal').textContent = `R$ ${formatCurrency(valorRefri)}`;
-            document.getElementById('orcBoloFinal').textContent = `R$ ${formatCurrency(valorBolo)}`;
-            document.getElementById('orcDecorFinal').textContent = `R$ ${formatCurrency(gastoDecoracao)}`;
-            document.getElementById('orcTotalFinal').textContent = `R$ ${formatCurrency(total)}`;
-        }
+    salvarDados();
+}
 
-        function formatCurrency(value) {
-            return parseFloat(value).toLocaleString('pt-BR', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-            });
-        }
+// ===== CONVIDADOS =====
+function addGuest() {
+    const nameInput = document.getElementById('guestName');
+    const name = nameInput.value.trim();
 
-        // Inicializar
-        updateCalculos();
-        renderGuests();
-    </script>
+    if (name === '') {
+        alert('Digite o nome do convidado');
+        return;
+    }
+
+    guests.push(name);
+    nameInput.value = '';
+    renderGuests();
+    salvarDados();
+}
+
+function removeGuest(index) {
+    guests.splice(index, 1);
+    renderGuests();
+    salvarDados();
+}
+
+function renderGuests() {
+    const list = document.getElementById('guestList');
+
+    if (guests.length === 0) {
+        list.innerHTML = '<p style="text-align:center;color:#999;padding:2rem;">Nenhum convidado ainda</p>';
+    } else {
+        list.innerHTML = guests.map((g, i) => `
+            <div class="guest-item">
+                <span>${i + 1}. ${g}</span>
+                <button onclick="removeGuest(${i})">✕</button>
+            </div>
+        `).join('');
+    }
+
+    document.getElementById('totalGuests').textContent = guests.length;
+
+    if (guests.length > 0) {
+        document.getElementById('numPessoas').value = guests.length;
+    }
+
+    updateCalculos();
+}
+
+// ===== CÁLCULOS =====
+function updateCalculos() {
+    const num = parseInt(document.getElementById('numPessoas').value) || 0;
+    const precoCarne = parseFloat(document.getElementById('precoCarne').value) || 0;
+    const precoRefri = parseFloat(document.getElementById('precoRefri').value) || 0;
+    const precoBolo = parseFloat(document.getElementById('precoBolo').value) || 0;
+    const boloPorcoes = parseInt(document.getElementById('boloPorcoes').value) || 1;
+    const area = parseFloat(document.getElementById('areaChurrasco').value) || 0;
+    const decor = parseFloat(document.getElementById('gastoDecoracao').value) || 0;
+
+    const carneKg = (num * 0.4).toFixed(1);
+    const carneValor = (carneKg * precoCarne).toFixed(2);
+
+    const refriL = (num * 0.5).toFixed(1);
+    const garrafas = Math.ceil(refriL / 2);
+    const refriValor = (garrafas * precoRefri).toFixed(2);
+
+    const bolos = Math.ceil(num / boloPorcoes);
+    const boloValor = (bolos * precoBolo).toFixed(2);
+
+    document.getElementById('totalCarne').textContent = carneKg;
+    document.getElementById('valorCarne').textContent = "R$ " + format(carneValor);
+
+    document.getElementById('totalRefri').textContent = refriL;
+    document.getElementById('garrafasRefri').textContent = garrafas;
+    document.getElementById('valorRefri').textContent = "R$ " + format(refriValor);
+
+    document.getElementById('qtdBolos').value = bolos;
+    document.getElementById('valorBolo').textContent = "R$ " + format(boloValor);
+
+    const total = (area + +carneValor + +refriValor + +boloValor + decor).toFixed(2);
+
+    document.getElementById('orcAreaFinal').textContent = "R$ " + format(area);
+    document.getElementById('orcCarneFinal').textContent = "R$ " + format(carneValor);
+    document.getElementById('orcRefriFinal').textContent = "R$ " + format(refriValor);
+    document.getElementById('orcBoloFinal').textContent = "R$ " + format(boloValor);
+    document.getElementById('orcDecorFinal').textContent = "R$ " + format(decor);
+    document.getElementById('orcTotalFinal').textContent = "R$ " + format(total);
+
+    salvarDados();
+}
+
+function format(v) {
+    return parseFloat(v).toLocaleString('pt-BR', {
+        minimumFractionDigits: 2
+    });
+}
+
+// ===== INICIAR =====
+carregarDados();
+</script>
+
+    
 </body>
 </html>
